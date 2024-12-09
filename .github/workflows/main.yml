@@ -1,0 +1,32 @@
+name: Scheduled Python Task
+ 
+on:
+  # Trigger the workflow on push to the main branch
+  push:
+    branches:
+      - main  # You can specify any branch you want to trigger on push
+  # Trigger the workflow on a scheduled basis (every 15 minutes)
+  schedule:
+    - cron: '*/2 * * * *'  # Runs every 2 minutes
+ 
+jobs:
+  run-python-task:
+    runs-on: ubuntu-latest
+ 
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+ 
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+ 
+    - name: Run the Python script (only on main branch)
+      run: python test.py
+      if: github.ref == 'refs/heads/main'  # Runs only on the main branch
+ 
+    - name: Notify success
+      run: echo "scheduled successfully!"
+      if: success()  # This step runs if all the previous steps were successful
+ 
